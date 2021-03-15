@@ -5,7 +5,6 @@ const LINES = 10;
 
 function change_game_content(game_content)
 {
-   
     for(let line_number=1; line_number<=LINES; line_number++)
     {
         let locate_image;
@@ -36,19 +35,19 @@ function change_game_content(game_content)
         }
 
     }
-    game_content[0]=1;
+    
 }
 
 function change_player_selection(game_content)
 {
-    var x = document.getElementById("selection");
+    var selection = document.getElementById("selection");
     for(line_number=1; line_number<=LINES; line_number++)
     {
         if(game_content[line_number-1]==0)
         {
             var option = document.createElement("option");
             option.text = `${line_number}`;
-            x.add(option);
+            selection.add(option);
         }
     }
     
@@ -59,10 +58,18 @@ function get_player_selection()
     
 }
 
+function clear_selection_content()
+{
+    var selection = document.getElementById("selection");
+    while (selection.options.length > 0) {
+        selection.remove(0);
+    }
+}
+
 function game_changer()
 {
     get_player_selection();
     change_game_content(game_content);
-    alert(game_content);
+    clear_selection_content(); 
     change_player_selection(game_content); 
 }
