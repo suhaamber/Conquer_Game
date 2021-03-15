@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Montserrat&display=swap');
+body
+{
+    background-color: #f0fff0;
+}
+
+h1
+{
+    text-align: center;
+    font-family: 'DotGothic16', sans-serif;
+    font-size: 100px;
+    color: #283D3B;
+}
+
+p
+{
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 30px;
+    color: #283D3B;
+}
+
+.myButton {
+	background-color:#197278;
+	border-radius:41px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:'DotGothic16', sans-serif;
+	font-size:20px;
+	padding:18px 31px;
+	text-decoration:none;
+}
+.myButton:hover {
+	background-color:#283D3B;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}

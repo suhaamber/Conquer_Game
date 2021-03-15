@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&family=Montserrat&display=swap');
+body
+{
+    background-color: #ffffff;
+}
+
+h1
+{
+    text-align: center;
+    font-family: 'DotGothic16', sans-serif;
+    font-size: 40px;
+    color: #283D3B;
+}
+
+p
+{
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    color: #283D3B;
+}
+
+.myButton {
+	background-color:#197278;
+	border-radius:41px;
+	display:block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:'DotGothic16', sans-serif;
+	font-size:20px;
+	padding:18px 31px;
+	text-decoration:none;
+}
+.myButton:hover {
+	background-color:#283D3B;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+
+.image1
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height:75px;
+    width: 75px;
+    float: left; 
+    margin-left:0px ;
+
+}
+
+.image2
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height: 75px;
+    width: 300px;
+    float: left;
+    margin-left: 75px;
+}
+
+.image3
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height:75px;
+    width: 75px;
+    float: left; 
+    margin-left: 375px ;
+
+}
+
+.image4
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height: 75px;
+    width: 300px;
+    float: left;
+    margin-left: 450px;
+}
+
+.image5
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height:75px;
+    width: 75px;
+    float: left; 
+    margin-left: 750px ;
+
+}
+
+
+.image6
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height:75px;
+    width: 300px;
+    float: left; 
+    margin-left: 825px ;
+
+}
+
+.image7
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height:75px;
+    width: 75px;
+    float: left; 
+    margin-left: 1100px ;
+
+}
+
+.image8
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height: 300px;
+    width: 75px;
+    float: left;
+    margin-left: 0px;
+    margin-top: 75px;
+}
+
+.image9
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height: 300px;
+    width: 75px;
+    float: left;
+    margin-left: 375px;
+    margin-top: 75px;
+}
+
+.image10
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height: 300px;
+    width: 75px;
+    float: left;
+    margin-left: 750px;
+    margin-top: 75px;
+}
+
+.image11
+{
+    display: block;
+    object-fit: scale-down;
+    position: absolute;
+    height: 300px;
+    width: 75px;
+    float: left;
+    margin-left: 1100px;
+    margin-top: 75px;
+}
+
+.row3
+{
+    margin-top: 375px; 
+}
+
+.push
+{
+    display: block;
+    position: relative;
+    margin-top: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
