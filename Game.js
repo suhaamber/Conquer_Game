@@ -1,5 +1,6 @@
 var game_content = [0,0,0,0,0,0,0,0,0,0];
 const LINES = 10;
+var start = false; 
 
 
 
@@ -83,7 +84,12 @@ function get_computer_selection()
 
 function game_changer()
 {
-    //change button name
+    if(!start)
+    {
+        var this_button       = document.getElementById("myButton");
+        this_button.value     = "Next move";  // change the value passed to the next page
+        this_button.innerHTML = "Next move";
+    }
     var selected_line = get_player_selection();
     change_game_content(selected_line, 2);
     computer_selected_line = get_computer_selection(); 
