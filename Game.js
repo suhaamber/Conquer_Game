@@ -1,6 +1,7 @@
 var game_content = [0,0,0,0,0,0,0,0,0,0];
 const LINES = 10;
 var start = false; 
+var player_rooms=0, computer_rooms=0;
 
 
 
@@ -72,7 +73,26 @@ function clear_selection_content()
 function change_game_content(selected_line, turn)
 {
     game_content[selected_line-1]=turn;
-    //check winner
+    player_rooms = 0;
+    for(i=0; i<3; i++)
+    {
+        if(game_content[i]==turn && game_content[i+3]==turn && game_content[i+4]==turn && game_content[i+7]==turn)
+        {
+            player_rooms++;
+        }
+    }
+    if(player_rooms>=2)
+    {
+        if(turn==1)
+        {
+            alert("Computer wins.");
+        }
+        else
+        {
+            alert("Player wins.");
+        }
+
+    }    
 }
 
 function get_computer_selection()
@@ -87,7 +107,7 @@ function game_changer()
     if(!start)
     {
         var this_button       = document.getElementById("myButton");
-        this_button.value     = "Next move";  // change the value passed to the next page
+        this_button.value     = "Next move"; 
         this_button.innerHTML = "Next move";
     }
     var selected_line = get_player_selection();
