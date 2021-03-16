@@ -3,7 +3,7 @@ const LINES = 10;
 
 
 
-function change_game_content(game_content)
+function change_game_display()
 {
     for(let line_number=1; line_number<=LINES; line_number++)
     {
@@ -38,7 +38,7 @@ function change_game_content(game_content)
     
 }
 
-function change_player_selection(game_content)
+function change_player_selection()
 {
     var selection = document.getElementById("selection");
     for(line_number=1; line_number<=LINES; line_number++)
@@ -55,7 +55,9 @@ function change_player_selection(game_content)
 
 function get_player_selection()
 {
-    
+    var selection = document.getElementById("selection");   
+    var selected_line = Number(selection.options[selection.selectedIndex].text);
+    return selected_line;
 }
 
 function clear_selection_content()
@@ -66,10 +68,27 @@ function clear_selection_content()
     }
 }
 
+function change_game_content(selected_line, turn)
+{
+    game_content[selected_line-1]=turn;
+    //check winner
+}
+
+function get_computer_selection()
+{
+    //minimax algorithm here 
+    //use temporary array for game_content
+    return selection
+}
+
 function game_changer()
 {
-    get_player_selection();
-    change_game_content(game_content);
+    //change button name
+    var selected_line = get_player_selection();
+    change_game_content(selected_line, 2);
+    computer_selected_line = get_computer_selection(); 
+    change_game_content(computer_selected_line, 1);
+    change_game_display();
     clear_selection_content(); 
-    change_player_selection(game_content); 
+    change_player_selection(); 
 }
