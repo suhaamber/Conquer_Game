@@ -111,6 +111,7 @@ function get_computer_selection()
 
 function minimax(test_game_content, depth, new_alpha, new_beta, turn)
 {
+    computer_selection = -1;
     game_over = true;
     for(i=0; i<10; i++)
     {
@@ -127,13 +128,55 @@ function minimax(test_game_content, depth, new_alpha, new_beta, turn)
     if(turn==COMPUTER_TURN)
     {
         var max_evaluation = -Infinity;
-        //maximizing player
+        for(i=0; i<LINES; i++)
+        {
+            if(test_game_content[i]==0)
+            {
+                test_game_content[i]=turn; 
+                current_evaluation = minimax(test_game_content, depth-1, new_alpha, new_beta, PLAYER_TURN); 
+                if(max_evaluation<current_evaluation)
+                {
+                    max_evaluation = current_evaluation; 
+                    computer_selection = i;
+                }
+                if(new_alpha<current_evaluation)
+                {
+                    new_alpha = current_evaluation;
+                }
+                if(new_beta<=new_alpha)
+                {
+                    break; 
+                }
+            }
+        }
+        return computer_selection; 
     }
 
     if(turn==PLAYER_TURN)
     {
         var min_evaluation = Infinity;
-        //minimizing player
+        for(i=0; i<LINES; i++)
+        {
+            if(test_game_content[i]==0)
+            {
+                test_game_content[i]==turn; 
+                current_evaluation = minimax(test_game_content, depth-1, new_alpha, new_beta, COMPUTER_TURN); 
+                if(max_evaluation<current_evaluation)
+                {
+                    max_evaluation = current_evaluation; 
+                    computer_selection = i; 
+                }
+                if(new_alpha<current_evaluation)
+                {
+                    new_alpha = current_evaluation; 
+                }
+                if(new_beta<=new_alpha)
+                {
+                    break; 
+                }
+            }
+        }
+        return computer_selection; 
     }
 
 }
@@ -141,6 +184,7 @@ function minimax(test_game_content, depth, new_alpha, new_beta, turn)
 function evaluate(test_game_content)
 {
     //???? how to evaluate 
+    //using random for now
     return 0;
 }
 
@@ -148,8 +192,8 @@ function game_changer()
 {
     if(!start)
     {
-        var this_button       = document.getElementById("myButton");
-        this_button.value     = "Next move"; 
+        var this_button = document.getElementById("myButton");
+        this_button.value = "Next move"; 
         this_button.innerHTML = "Next move";
         clear_selection_content(); 
         reset_player_selection();
