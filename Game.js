@@ -7,6 +7,7 @@ var start = false;
 const COMPUTER_TURN = 1;
 const PLAYER_TURN = 2; 
 const EMPTY = 0;
+var computer_selection = -1; 
 
 function change_game_display()
 {
@@ -100,19 +101,25 @@ function change_game_content(selected_line, turn)
 
 function get_computer_selection()
 {
+    computer_selection = -1; 
     var test_game_content = [0,0,0,0,0,0,0,0,0,0];
     game_content.forEach(function(item, index, array){
         test_game_content[index] = item;
     }) 
+    
+    let selection = minimax(test_game_content, DEPTH, COMPUTER_TURN);
+    if(game_content[computer_selection]!=0)
+    {
+        alert("Error.");    
+    }
+    return computer_selection;
 
-    selection = minimax(test_game_content, DEPTH, ALPHA, BETA, COMPUTER_TURN);
-    return selection
 }
 
-function minimax(test_game_content, depth, new_alpha, new_beta, turn)
+function minimax(test_game_content, depth, turn)
 {
-    computer_selection = -1;
     game_over = true;
+  
     for(i=0; i<10; i++)
     {
         if(test_game_content[i]==0)
@@ -122,71 +129,79 @@ function minimax(test_game_content, depth, new_alpha, new_beta, turn)
         }
     }
 
-    if(game_over || depth==0)
-        return evaluate(test_game_content);
-
-    if(turn==COMPUTER_TURN)
+    if(depth==0||game_over)
     {
-        var max_evaluation = -Infinity;
-        for(i=0; i<LINES; i++)
-        {
-            if(test_game_content[i]==0)
-            {
-                test_game_content[i]=turn; 
-                current_evaluation = minimax(test_game_content, depth-1, new_alpha, new_beta, PLAYER_TURN); 
-                if(max_evaluation<current_evaluation)
-                {
-                    max_evaluation = current_evaluation; 
-                    computer_selection = i;
-                }
-                if(new_alpha<current_evaluation)
-                {
-                    new_alpha = current_evaluation;
-                }
-                if(new_beta<=new_alpha)
-                {
-                    break; 
-                }
-            }
-        }
-        return computer_selection; 
+        evaluation = evaluate(test_game_content);
+        return evaluation;
     }
 
-    if(turn==PLAYER_TURN)
+    else
     {
-        var min_evaluation = Infinity;
-        for(i=0; i<LINES; i++)
+        if(turn==COMPUTER_TURN)
         {
-            if(test_game_content[i]==0)
+            let i;
+            var max_evaluation = -Infinity;
+            for(i=0; i<LINES; i++)
             {
-                test_game_content[i]==turn; 
-                current_evaluation = minimax(test_game_content, depth-1, new_alpha, new_beta, COMPUTER_TURN); 
-                if(max_evaluation<current_evaluation)
+        
+                if(test_game_content[i]==0)
                 {
-                    max_evaluation = current_evaluation; 
-                    computer_selection = i; 
-                }
-                if(new_alpha<current_evaluation)
-                {
-                    new_alpha = current_evaluation; 
-                }
-                if(new_beta<=new_alpha)
-                {
-                    break; 
+                    test_game_content[i] = turn; 
+               
+                    let current_evaluation = minimax(test_game_content, depth-1, PLAYER_TURN); 
+                   
+                    if(max_evaluation<current_evaluation)
+                    {
+                        max_evaluation = current_evaluation;
+                        if(depth==DEPTH)
+                        {
+                            computer_selection = i;
+                        }
+                    }
+                    
+                    test_game_content[i]=0;
                 }
             }
+            return max_evaluation; 
         }
-        return computer_selection; 
-    }
 
+        if(turn==PLAYER_TURN)
+        {
+            let i;
+            var min_evaluation = Infinity;
+            for(i=0; i<LINES; i++)
+            {
+             
+                if(test_game_content[i]==0)
+                {
+                    test_game_content[i] = turn; 
+                  
+                    current_evaluation = minimax(test_game_content, depth-1, COMPUTER_TURN); 
+  
+                    if(min_evaluation>current_evaluation)
+                    {
+                        min_evaluation = current_evaluation;  
+                    }
+              
+                    test_game_content[i]=0;
+                }
+            }
+            return min_evaluation; 
+        }
+    }
 }
 
 function evaluate(test_game_content)
 {
     //???? how to evaluate 
     //using random for now
-    return 0;
+    random_evaluation = get_random_evaluation(-3, 3); 
+    return random_evaluation;
 }
+
+function get_random_evaluation(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) ) + min;
+  }
 
 function game_changer()
 {
@@ -204,7 +219,7 @@ function game_changer()
         var selected_line = get_player_selection();
         change_game_content(selected_line, 2);
         computer_selected_line = get_computer_selection(); 
-        change_game_content(computer_selected_line, 1);
+        change_game_content(computer_selected_line+1, 1);
         change_game_display();
         clear_selection_content(); 
         reset_player_selection(); 
