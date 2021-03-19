@@ -114,10 +114,11 @@ function change_game_content(selected_line, turn)
             if(lines_complete==4)
             {
                 room_winner[room]=turn; 
+                room_number = Number(room) + 1; 
                 if(turn==PLAYER_TURN)
-                    alert("You have conquered room " + (room+1));
+                    alert("You have conquered room " + room_number);
                 else 
-                    alert("Computer has conquered room " + (room+1));
+                    alert("Computer has conquered room " + room_number);
             }
         }
     }
