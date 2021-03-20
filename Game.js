@@ -94,6 +94,8 @@ function change_game_content(selected_line, turn)
         }
     });
     //change room_winners (check for room winners)
+
+
     for(var room in room_winner)
     {
         if(room_winner[room]==0)
@@ -114,26 +116,23 @@ function change_game_content(selected_line, turn)
             if(lines_complete==4)
             {
                 room_winner[room]=turn; 
-                room_number = Number(room) + 1; 
                 if(turn==PLAYER_TURN)
-                    alert("You have conquered room " + room_number);
+                    alert("You have conquered room " + (room+1));
                 else 
-                    alert("Computer has conquered room " + room_number);
+                    alert("Computer has conquered room " + (room+1));
             }
         }
-    }
-    
+    } 
 }
 
-function get_computer_selection()
+function get_computer_selection(player_selected_line)
 {
     computer_selection = -1; 
-    var test_game_content = [0,0,0,0,0,0,0,0,0,0];
-    game_content.forEach(function(item, index, array){
-        test_game_content[index] = item;
-    }) 
+    var temporary_game_content = game_content; 
+    var temporary_rooms = rooms;
+    var temporary_room_winner = room_winner; 
     
-    let selection = minimax(test_game_content, DEPTH, COMPUTER_TURN);
+    let selection = minimax(temporary_game_content, temporary_rooms, temporary_room_winner, DEPTH, COMPUTER_TURN, player_selected_line);
     if(game_content[computer_selection]!=0)
     {
         alert("Error.");    
@@ -142,7 +141,7 @@ function get_computer_selection()
 
 }
 
-function minimax(test_game_content, depth, turn)
+function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, previously_selected_line) 
 {
     game_over = true; 
     for(i=0; i<10; i++)
@@ -156,7 +155,7 @@ function minimax(test_game_content, depth, turn)
 
     if(depth==0||game_over)
     {
-        evaluation = evaluate(test_game_content);
+        evaluation = get_random_evaluation(-3, 3); 
         return evaluation;
     }
 
@@ -171,9 +170,45 @@ function minimax(test_game_content, depth, turn)
         
                 if(test_game_content[i]==0)
                 {
-                    test_game_content[i] = turn; 
-               
-                    let current_evaluation = minimax(test_game_content, depth-1, PLAYER_TURN); 
+                    test_game_content[i] = turn;     
+                    var new_rooms = test_rooms;
+
+                    new_rooms.forEach(new_room => {
+                        for (var line in new_room)
+                        {
+                            if(line==(i+1) && new_room[line]==0)
+                                {
+                                    new_room[line] = COMPUTER_TURN; 
+                                }
+                        }
+                    });
+
+                    var new_room_winner = test_room_winner;
+                    for(var new_room_1 in new_room_winner)
+                    {
+                        if(new_room_winner[new_room_1]==0)
+                        {
+                            var lines_complete = 0; 
+                            var temp_room = new_rooms[new_room_1];
+                            for(var key in temp_room)
+                            {
+                                if(temp_room[key]!=0)
+                                {
+                                    lines_complete++;
+                                }
+                                else 
+                                {
+                                    break;
+                                }
+                            }
+                            if(lines_complete==4)
+                            {
+                                new_room_winner[new_room_1]=turn; 
+                            }
+                        }
+                    } 
+                    
+                    let current_evaluation = minimax(test_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN, i+1); 
                    
                     if(max_evaluation<current_evaluation)
                     {
@@ -183,7 +218,7 @@ function minimax(test_game_content, depth, turn)
                             computer_selection = i;
                         }
                     }            
-                    test_game_content[i]=0;
+                    test_game_content[i] = 0;
                 }
             }
             return max_evaluation; 
@@ -198,8 +233,47 @@ function minimax(test_game_content, depth, turn)
              
                 if(test_game_content[i]==0)
                 {
-                    test_game_content[i] = turn;        
-                    current_evaluation = minimax(test_game_content, depth-1, COMPUTER_TURN); 
+                    test_game_content[i] = turn; 
+                   
+                    var new_rooms = test_rooms;
+
+                    new_rooms.forEach(new_room => {
+                        for (var line in new_room)
+                        {
+                            if(line==(i+1) && new_room[line]==0)
+                                {
+                                    new_room[line] = COMPUTER_TURN; 
+                                }
+                        }
+                    });
+
+                    var new_room_winner = test_room_winner;
+                    for(var new_room_1 in new_room_winner)
+                    {
+                        if(new_room_winner[new_room_1]==0)
+                        {
+                            var lines_complete = 0; 
+                            var temp_room = new_rooms[new_room_1];
+                            for(var key in temp_room)
+                            {
+                                if(temp_room[key]!=0)
+                                {
+                                    lines_complete++;
+                                }
+                                else 
+                                {
+                                    break;
+                                }
+                            }
+                            if(lines_complete==4)
+                            {
+                                new_room_winner[new_room_1]=turn; 
+                            }
+                        }
+                    } 
+                     
+                    let current_evaluation = minimax(test_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN, i+1); 
+
                     if(min_evaluation>current_evaluation)
                     {
                         min_evaluation = current_evaluation;  
@@ -213,12 +287,60 @@ function minimax(test_game_content, depth, turn)
     }
 }
 
-function evaluate(test_game_content)
+function change_rooms(test_rooms, i, turn)
 {
-    //???? how to evaluate 
-    //using random for now
-    random_evaluation = get_random_evaluation(-3, 3); 
-    return random_evaluation;
+    test_rooms.forEach(room => {
+        for (var line in room)
+        {
+            if(line==(i+1) && room[line]==0)
+                {
+                    room[line] = turn; 
+                }
+        }
+    });
+    return test_rooms; 
+}
+
+function change_room_winner(test_room_winner, test_rooms, turn)
+{
+    for(var room in test_room_winner)
+    {
+        if(test_room_winner[room]==0)
+        {
+            var lines_complete = 0; 
+            var temp_room = test_rooms[room];
+            for(var key in temp_room)
+            {
+                if(temp_room[key]!=0)
+                {
+                    lines_complete++;
+                }
+                else 
+                {
+                    break;
+                }
+            }
+            if(lines_complete==4)
+            {
+                test_room_winner[room]=turn; 
+            }
+        }
+    }
+    return test_room_winner;
+}
+
+function evaluate(test_room_winner)
+{
+    var computer_rooms = 0, player_rooms = 0; 
+    for(var room in test_room_winner)
+    {
+        if(test_room_winner[room] == PLAYER_TURN)
+            player_rooms++;
+        else
+            computer_rooms++; 
+    }
+    evaluation = computer_rooms - player_rooms; 
+    return evaluation;
 }
 
 function get_random_evaluation(min, max) {
@@ -262,11 +384,11 @@ function game_changer()
         lines_selected++;
         var selected_line = get_player_selection();
         change_game_content(selected_line, PLAYER_TURN);
-        computer_selected_line = get_computer_selection();
+        alert("what");
+        computer_selected_line = get_computer_selection(selected_line-1);
         lines_selected++;
         change_game_content(computer_selected_line+1, COMPUTER_TURN);
         change_game_display();
-        alert("The computer selected " + (computer_selected_line+1));  
         clear_selection_content(); 
         reset_player_selection(); 
         if(lines_selected==LINES)
