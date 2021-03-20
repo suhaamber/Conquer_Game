@@ -242,7 +242,7 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
                         {
                             if(line==(i+1) && new_room[line]==0)
                                 {
-                                    new_room[line] = COMPUTER_TURN; 
+                                    new_room[line] = PLAYER_TURN; 
                                 }
                         }
                     });
