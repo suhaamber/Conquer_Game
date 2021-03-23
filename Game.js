@@ -5,15 +5,14 @@ var rooms = [    { 1:0, 4:0, 5:0, 8:0 },
 var room_winner = {0:0, 1:0, 2:0 };
 
 const LINES = 10;
-var lines_selected = 0;
 const DEPTH = 2; 
-const ALPHA = -Infinity; 
-const BETA = Infinity; 
-var start = false; 
 const COMPUTER_TURN = 1;
 const PLAYER_TURN = 2; 
-const EMPTY = 0;
+
 var computer_selection = -1; 
+var start = false; 
+var lines_selected = 0;
+var new_winner = 0; 
 
 function change_game_display()
 {
@@ -83,6 +82,7 @@ function clear_selection_content()
 function change_game_content(selected_line, turn)
 {
     game_content[selected_line-1]=turn;
+
     //change rooms
     rooms.forEach(room => {
         for (var line in room)
@@ -93,9 +93,10 @@ function change_game_content(selected_line, turn)
                 }
         }
     });
-    //change room_winners (check for room winners)
+}
 
-
+function check_room_winners(turn)
+{
     for(var room in room_winner)
     {
         if(room_winner[room]==0)
@@ -117,15 +118,15 @@ function change_game_content(selected_line, turn)
             {
                 room_winner[room]=turn; 
                 if(turn==PLAYER_TURN)
-                    alert("You have conquered room " + (room));
+                    alert("You have conquered room " + (Number(room)+1));
                 else 
-                    alert("Computer has conquered room " + (room));
+                    alert("I have conquered room " + (Number(room)+1));
             }
         }
     } 
 }
 
-function get_computer_selection(player_selected_line)
+function get_computer_selection()
 {
     
     computer_selection = -1; 
@@ -150,7 +151,7 @@ function get_computer_selection(player_selected_line)
         temporary_room_winner[key] = room_winner[key];
     }
 
-    let selection = minimax(temporary_game_content, temporary_rooms, temporary_room_winner, DEPTH, COMPUTER_TURN, player_selected_line);
+    let selection = minimax(temporary_game_content, temporary_rooms, temporary_room_winner, DEPTH, COMPUTER_TURN);
     if(game_content[computer_selection]!=0)
     {
         alert("Error.");    
@@ -159,7 +160,7 @@ function get_computer_selection(player_selected_line)
 
 }
 
-function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, previously_selected_line) 
+function minimax(test_game_content, test_rooms, test_room_winner, depth, turn) 
 {
     game_over = true; 
     for(i=0; i<10; i++)
@@ -242,7 +243,7 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
                         }
                     }
                     
-                    let current_evaluation = minimax(new_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN, i+1); 
+                    let current_evaluation = minimax(new_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN); 
                    
                     if(max_evaluation<current_evaluation)
                     {
@@ -320,7 +321,7 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
                         }
                     }
                      
-                    let current_evaluation = minimax(new_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN, i+1); 
+                    let current_evaluation = minimax(new_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN); 
 
                     if(min_evaluation>current_evaluation)
                     {
@@ -352,7 +353,7 @@ function get_random_evaluation(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
   }
 
-  function check_winner()
+function check_winner()
 {
     var computer_rooms = 0, player_rooms = 0; 
     for(var room in room_winner)
@@ -389,12 +390,13 @@ function game_changer()
         lines_selected++;
         var selected_line = get_player_selection();
         change_game_content(selected_line, PLAYER_TURN);
-        change_game_display();
-        computer_selected_line = get_computer_selection(selected_line-1);
-        //
+        change_game_display(); 
+        check_room_winners(PLAYER_TURN); 
+        computer_selected_line = get_computer_selection();
         lines_selected++;
         change_game_content(computer_selected_line+1, COMPUTER_TURN);
         change_game_display();
+        check_room_winners(COMPUTER_TURN);  
         clear_selection_content(); 
         reset_player_selection(); 
         if(lines_selected==LINES)
