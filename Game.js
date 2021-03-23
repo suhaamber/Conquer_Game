@@ -173,7 +173,7 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
 
     if(depth==0||game_over)
     {
-        evaluation = get_random_evaluation(-3, 3); 
+        evaluation = evaluate(test_room_winner); 
         return evaluation;
     }
 
