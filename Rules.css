@@ -14,12 +14,12 @@ h1
 
 p
 {
-    text-align: center;
+    text-align: left;
     font-family: 'Montserrat', sans-serif;
-    font-size: 30px;
+    font-size: 25px;
     color: #283D3B;
+    margin-inline: 15px 15px;
 }
-
 .myButton {
 	background-color:#197278;
 	border-radius:41px;
