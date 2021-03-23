@@ -117,9 +117,9 @@ function change_game_content(selected_line, turn)
             {
                 room_winner[room]=turn; 
                 if(turn==PLAYER_TURN)
-                    alert("You have conquered room " + (room+1));
+                    alert("You have conquered room " + (room));
                 else 
-                    alert("Computer has conquered room " + (room+1));
+                    alert("Computer has conquered room " + (room));
             }
         }
     } 
@@ -127,11 +127,29 @@ function change_game_content(selected_line, turn)
 
 function get_computer_selection(player_selected_line)
 {
-    computer_selection = -1; 
-    var temporary_game_content = game_content; 
-    var temporary_rooms = rooms;
-    var temporary_room_winner = room_winner; 
     
+    computer_selection = -1; 
+    //copied successfully 
+    var temporary_game_content = [...game_content]; 
+
+    //yes
+    var temporary_rooms = [{}, {}, {}];
+    var i = -1; 
+    rooms.forEach(room => {
+        i++; 
+        for(var line in room)
+        {
+            temporary_rooms[i][line] = room[line];
+        }
+    });
+
+    //copied successfully
+    var temporary_room_winner = {};
+    for(var key in room_winner)
+    {
+        temporary_room_winner[key] = room_winner[key];
+    }
+
     let selection = minimax(temporary_game_content, temporary_rooms, temporary_room_winner, DEPTH, COMPUTER_TURN, player_selected_line);
     if(game_content[computer_selection]!=0)
     {
@@ -170,26 +188,42 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
         
                 if(test_game_content[i]==0)
                 {
-                    test_game_content[i] = turn;     
-                    var new_rooms = test_rooms;
-
-                    new_rooms.forEach(new_room => {
-                        for (var line in new_room)
+                    //
+                    var new_game_content = [...test_game_content]; 
+                    new_game_content[i] = turn; 
+                    //???
+                    var j = -1; 
+                    var new_rooms = [{}, {}, {}];
+                    test_rooms.forEach(room => {
+                        j++; 
+                        for(var line in room)
                         {
-                            if(line==(i+1) && new_room[line]==0)
+                            new_rooms[j][line] = room[line];
+                        }
+                    });
+                    //copied successfully
+                    var new_room_winner = {};
+                    for(var key in test_room_winner)
+                    {
+                        new_room_winner[key] = test_room_winner[key];
+                    }
+
+                    new_rooms.forEach(room => {
+                        for (var line in room)
+                        {
+                            if(line==(i+1) && room[line]==0)
                                 {
-                                    new_room[line] = COMPUTER_TURN; 
+                                    room[line] = turn; 
                                 }
                         }
                     });
 
-                    var new_room_winner = test_room_winner;
-                    for(var new_room_1 in new_room_winner)
+                    for(var room in new_room_winner)
                     {
-                        if(new_room_winner[new_room_1]==0)
+                        if(new_room_winner[room]==0)
                         {
                             var lines_complete = 0; 
-                            var temp_room = new_rooms[new_room_1];
+                            var temp_room = new_rooms[room];
                             for(var key in temp_room)
                             {
                                 if(temp_room[key]!=0)
@@ -203,12 +237,12 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
                             }
                             if(lines_complete==4)
                             {
-                                new_room_winner[new_room_1]=turn; 
+                                new_room_winner[room]=turn; 
                             }
                         }
-                    } 
+                    }
                     
-                    let current_evaluation = minimax(test_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN, i+1); 
+                    let current_evaluation = minimax(new_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN, i+1); 
                    
                     if(max_evaluation<current_evaluation)
                     {
@@ -218,7 +252,6 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
                             computer_selection = i;
                         }
                     }            
-                    test_game_content[i] = 0;
                 }
             }
             return max_evaluation; 
@@ -233,27 +266,42 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
              
                 if(test_game_content[i]==0)
                 {
-                    test_game_content[i] = turn; 
-                   
-                    var new_rooms = test_rooms;
-
-                    new_rooms.forEach(new_room => {
-                        for (var line in new_room)
+                    //
+                    var new_game_content = [...test_game_content]; 
+                    new_game_content[i] = turn; 
+                    //???
+                    var j = -1; 
+                    var new_rooms = [{}, {}, {}];
+                    test_rooms.forEach(room => {
+                        j++; 
+                        for(var line in room)
                         {
-                            if(line==(i+1) && new_room[line]==0)
+                            new_rooms[j][line] = room[line];
+                        }
+                    });
+                    //copied successfully
+                    var new_room_winner = {};
+                    for(var key in test_room_winner)
+                    {
+                        new_room_winner[key] = test_room_winner[key];
+                    }
+
+                    new_rooms.forEach(room => {
+                        for (var line in room)
+                        {
+                            if(line==(i+1) && room[line]==0)
                                 {
-                                    new_room[line] = PLAYER_TURN; 
+                                    room[line] = turn; 
                                 }
                         }
                     });
 
-                    var new_room_winner = test_room_winner;
-                    for(var new_room_1 in new_room_winner)
+                    for(var room in new_room_winner)
                     {
-                        if(new_room_winner[new_room_1]==0)
+                        if(new_room_winner[room]==0)
                         {
                             var lines_complete = 0; 
-                            var temp_room = new_rooms[new_room_1];
+                            var temp_room = new_rooms[room];
                             for(var key in temp_room)
                             {
                                 if(temp_room[key]!=0)
@@ -267,66 +315,23 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn, p
                             }
                             if(lines_complete==4)
                             {
-                                new_room_winner[new_room_1]=turn; 
+                                new_room_winner[room]=turn; 
                             }
                         }
-                    } 
+                    }
                      
-                    let current_evaluation = minimax(test_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN, i+1); 
+                    let current_evaluation = minimax(new_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN, i+1); 
 
                     if(min_evaluation>current_evaluation)
                     {
                         min_evaluation = current_evaluation;  
                     }
-              
-                    test_game_content[i]=0;
+            
                 }
             }
             return min_evaluation; 
         }
     }
-}
-
-function change_rooms(test_rooms, i, turn)
-{
-    test_rooms.forEach(room => {
-        for (var line in room)
-        {
-            if(line==(i+1) && room[line]==0)
-                {
-                    room[line] = turn; 
-                }
-        }
-    });
-    return test_rooms; 
-}
-
-function change_room_winner(test_room_winner, test_rooms, turn)
-{
-    for(var room in test_room_winner)
-    {
-        if(test_room_winner[room]==0)
-        {
-            var lines_complete = 0; 
-            var temp_room = test_rooms[room];
-            for(var key in temp_room)
-            {
-                if(temp_room[key]!=0)
-                {
-                    lines_complete++;
-                }
-                else 
-                {
-                    break;
-                }
-            }
-            if(lines_complete==4)
-            {
-                test_room_winner[room]=turn; 
-            }
-        }
-    }
-    return test_room_winner;
 }
 
 function evaluate(test_room_winner)
@@ -384,8 +389,9 @@ function game_changer()
         lines_selected++;
         var selected_line = get_player_selection();
         change_game_content(selected_line, PLAYER_TURN);
-        alert("what");
+        change_game_display();
         computer_selected_line = get_computer_selection(selected_line-1);
+        //
         lines_selected++;
         change_game_content(computer_selected_line+1, COMPUTER_TURN);
         change_game_display();
