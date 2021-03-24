@@ -1,9 +1,12 @@
+
+//game state - global variables
 var game_content = [0,0,0,0,0,0,0,0,0,0];
 var rooms = [    { 1:0, 4:0, 5:0, 8:0 }, 
     { 2:0, 5:0, 6:0, 9:0 },
     { 3:0, 6:0, 7:0, 10:0 } ];
 var room_winner = {0:0, 1:0, 2:0 };
 
+//constants
 const LINES = 10;
 const DEPTH = 2; 
 const COMPUTER_TURN = 1;
@@ -14,6 +17,7 @@ var start = false;
 var lines_selected = 0;
 var new_winner = 0; 
 
+//changes the game display by altering HTML 
 function change_game_display()
 {
     for(let line_number=1; line_number<=LINES; line_number++)
@@ -49,6 +53,7 @@ function change_game_display()
     
 }
 
+//fills the dropdown list with available lines
 function reset_player_selection()
 {
     var selection = document.getElementById("selection");
@@ -64,6 +69,7 @@ function reset_player_selection()
     
 }
 
+//gets player's selected line
 function get_player_selection()
 {
     var selection = document.getElementById("selection");   
@@ -71,6 +77,7 @@ function get_player_selection()
     return selected_line;
 }
 
+//clears the dropdown list
 function clear_selection_content()
 {
     var selection = document.getElementById("selection");
@@ -79,11 +86,13 @@ function clear_selection_content()
     }
 }
 
+//changes the game state according to the line selected and by which player
 function change_game_content(selected_line, turn)
 {
+    //change game content
     game_content[selected_line-1]=turn;
 
-    //change rooms
+    //change rooms content
     rooms.forEach(room => {
         for (var line in room)
         {
@@ -95,10 +104,12 @@ function change_game_content(selected_line, turn)
     });
 }
 
+//checks for winners of an individual room 
 function check_room_winners(turn)
 {
     for(var room in room_winner)
     {
+        //check for rooms that dont already have a winner
         if(room_winner[room]==0)
         {
             var lines_complete = 0; 
@@ -126,14 +137,13 @@ function check_room_winners(turn)
     } 
 }
 
+//get a computer generated selection
 function get_computer_selection()
 {
-    
+    //tracks index of the most optimal evaluation
     computer_selection = -1; 
-    //copied successfully 
+    //copy game state to new arrays
     var temporary_game_content = [...game_content]; 
-
-    //yes
     var temporary_rooms = [{}, {}, {}];
     var i = -1; 
     rooms.forEach(room => {
@@ -143,15 +153,16 @@ function get_computer_selection()
             temporary_rooms[i][line] = room[line];
         }
     });
-
-    //copied successfully
     var temporary_room_winner = {};
     for(var key in room_winner)
     {
         temporary_room_winner[key] = room_winner[key];
     }
 
+    //run minimax
     let selection = minimax(temporary_game_content, temporary_rooms, temporary_room_winner, DEPTH, COMPUTER_TURN);
+    
+    //faulty selection
     if(game_content[computer_selection]!=0)
     {
         alert("Error.");    
@@ -163,6 +174,7 @@ function get_computer_selection()
 function minimax(test_game_content, test_rooms, test_room_winner, depth, turn) 
 {
     game_over = true; 
+    //check if the evaluation is at the last level
     for(i=0; i<10; i++)
     {
         if(test_game_content[i]==0)
@@ -172,6 +184,7 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn)
         }
     }
 
+    //evaluate if depth is 0 or if the node is at the last level
     if(depth==0||game_over)
     {
         evaluation = evaluate(test_room_winner); 
@@ -180,19 +193,20 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn)
 
     else
     {
+        //maximizing player
         if(turn==COMPUTER_TURN)
         {
             let i;
             var max_evaluation = -Infinity;
+            //find evaluation for all possibilities
             for(i=0; i<LINES; i++)
             {
         
                 if(test_game_content[i]==0)
                 {
-                    //
+                    //create temporary game state
                     var new_game_content = [...test_game_content]; 
                     new_game_content[i] = turn; 
-                    //???
                     var j = -1; 
                     var new_rooms = [{}, {}, {}];
                     test_rooms.forEach(room => {
@@ -202,7 +216,7 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn)
                             new_rooms[j][line] = room[line];
                         }
                     });
-                    //copied successfully
+                    //calculate room winners for current state
                     var new_room_winner = {};
                     for(var key in test_room_winner)
                     {
@@ -243,13 +257,16 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn)
                         }
                     }
                     
+                    //pass current game state with reduced depth and pass it to minimizing player
                     let current_evaluation = minimax(new_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN); 
                    
+                    //store max_evaluation
                     if(max_evaluation<current_evaluation)
                     {
                         max_evaluation = current_evaluation;
                         if(depth==DEPTH)
                         {
+                            //store index of max evaluation
                             computer_selection = i;
                         }
                     }            
@@ -258,19 +275,20 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn)
             return max_evaluation; 
         }
 
+        //minimizing player
         if(turn==PLAYER_TURN)
         {
             let i;
             var min_evaluation = Infinity;
+            //consider all possibilities
             for(i=0; i<LINES; i++)
             {
              
                 if(test_game_content[i]==0)
                 {
-                    //
+                    //create temporary game state
                     var new_game_content = [...test_game_content]; 
                     new_game_content[i] = turn; 
-                    //???
                     var j = -1; 
                     var new_rooms = [{}, {}, {}];
                     test_rooms.forEach(room => {
@@ -320,11 +338,12 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn)
                             }
                         }
                     }
-                     
+                    //call minimax with new game state, reduced state and maximizing player
                     let current_evaluation = minimax(new_game_content, new_rooms, new_room_winner, depth-1, PLAYER_TURN); 
 
                     if(min_evaluation>current_evaluation)
                     {
+                        //store minimum evaluation
                         min_evaluation = current_evaluation;  
                     }
             
@@ -335,6 +354,7 @@ function minimax(test_game_content, test_rooms, test_room_winner, depth, turn)
     }
 }
 
+//evaluation function
 function evaluate(test_room_winner)
 {
     var computer_rooms = 0, player_rooms = 0; 
@@ -345,14 +365,17 @@ function evaluate(test_room_winner)
         else
             computer_rooms++; 
     }
+    //most number of rooms that can be occupied by the agent 
     evaluation = computer_rooms - player_rooms; 
     return evaluation;
 }
 
+//alternative random evaluation function
 function get_random_evaluation(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
   }
 
+//check for winner when the game is over
 function check_winner()
 {
     var computer_rooms = 0, player_rooms = 0; 
@@ -374,6 +397,8 @@ function check_winner()
     }
 }
 
+//driver function
+//called everytime the next move button is pressed
 function game_changer()
 {
     if(!start)
